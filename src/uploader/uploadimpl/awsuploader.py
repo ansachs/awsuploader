@@ -4,7 +4,8 @@ import threading
 
 import boto3
 
-from uploader.uploadimpl.uploaderbase import UploaderBase
+from progresspercentage import ProgressPercentage
+from uploadimpl.uploaderbase import UploaderBase
 
 
 class AwsUploader(UploaderBase):
@@ -18,13 +19,14 @@ class AwsUploader(UploaderBase):
     def upload(self, file_path: str, file_key: str) -> bool:
         print(f'thread: {threading.currentThread().getName()} started upload for file {file_key}')
         stat = os.stat(file_path)
-        file_permissions = stat.st_mode
-        file_last_modified = stat.st_mtime
+        file_permissions = str(stat.st_mode)
+        file_last_modified = str(stat.st_mtime)
         try:
             self.client.upload_file(file_path,
                                     self.bucket,
                                     file_key,
-                                    extra_args={'Metadata': {'last_modified': file_last_modified,
+                                    Callback=ProgressPercentage(file_path),
+                                    ExtraArgs={'Metadata': {'last_modified': file_last_modified,
                                                              'permissions': file_permissions}
                                     })
         except Exception as e:

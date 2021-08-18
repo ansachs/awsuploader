@@ -1,10 +1,14 @@
 import os
-from collections import namedtuple
-
-File = namedtuple('File', ['path', 'filename'])
+from dataclasses import dataclass
 
 
-def list_files(directory_path: str) -> list[File]:
+@dataclass
+class FileDesc:
+    path: str
+    filename: str
+
+
+def list_files(directory_path: str) -> list[FileDesc]:
     all_files = list()
     top_files = os.listdir(directory_path)
 
@@ -13,6 +17,6 @@ def list_files(directory_path: str) -> list[File]:
         if os.path.isdir(path):
             all_files.extend(list_files(path))
         else:
-            all_files.append(File(path=path, filename=file))
+            all_files.append(FileDesc(path=path, filename=file))
 
     return all_files

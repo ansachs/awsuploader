@@ -4,14 +4,14 @@ import resource
 
 from dotenv import load_dotenv
 
-from uploader.filehandler import list_files
-from uploader.uploadimpl.awsuploader import AwsUploader
+from filehandler import list_files
+from uploadimpl.awsuploader import AwsUploader
 
 
 def limit_memory(memory_fraction: float):
     soft, hard = resource.getrlimit(resource.RLIMIT_AS)
-    soft_max = memory_fraction * soft
-    resource.setrlimit(resource.RLIMIT_AS, (int(soft_max), hard))
+    max_usage = memory_fraction * soft
+    resource.setrlimit(resource.RLIMIT_AS, (int(max_usage), int(max_usage)))
 
 
 if __name__ == '__main__':
